@@ -4,6 +4,8 @@ import cn.edu.hfut.dmic.webcollector.model.CrawlDatums;
 import cn.edu.hfut.dmic.webcollector.model.Links;
 import cn.edu.hfut.dmic.webcollector.model.Page;
 import cn.edu.hfut.dmic.webcollector.plugin.berkeley.BreadthCrawler;
+import cn.insight.crawler.job.entity.Position;
+import org.jsoup.nodes.Element;
 
 import static cn.insight.crawler.common.Constants.*;
 
@@ -31,8 +33,47 @@ public class Job51Crawler extends BreadthCrawler {
             next.add(links, PageType.DETAIL.toString());
             //System.out.println("links.size=" + links.size() + " , links=" + links);
         } else if (page.matchType(PageType.DETAIL.toString())) {
-            System.out.println("detail=" + page.url());
+            //System.out.println("detail=" + page.url());
+            detailAnalysis(page);
         }
+    }
+
+    public void detailAnalysis(Page page) {
+        try {
+            Position entity = new Position();
+
+            entity.setSource_url(page.url());
+            // 公司信息
+            Element companyEls = page.select("div.tHeader.tHjob > div > div.cn").first();
+            String position = companyEls.select("h1").first().attr("title");
+            String location = companyEls.select("span.lname").first().text();
+            String salary = companyEls.select("strong").first().text();
+            String company = companyEls.select("p.cname > a").first().attr("title");
+            String natures = companyEls.select(" p.msg.ltype").first().text();
+            natures = natures.replaceAll(" *", "");
+            String[] natureArr = natures.split("\\|");
+
+            entity.setPosition(position);
+            entity.setCity(location);
+            entity.setSalary(salary);
+            entity.setCompany(company);
+            entity.setNature(natureArr[0]);
+            entity.setScale(natureArr[1]);
+            entity.setIndustry(natureArr[2]);
+
+            // 发布日期
+            Element publishInfo = page.select("div.tCompany_main > div.tBorderTop_box.bt > div").first();
+            String publishDate = publishInfo.select("div > span").last().text();
+            entity.setPublish_date(publishDate);
+
+            // 岗位职责
+            String duty = page.select("div.tCompany_main > div:nth-child(4) > div").first().text();
+            entity.setDuty(duty);
+            System.out.println(entity);
+        } finally {
+
+        }
+
     }
 
     public static void main(String[] args) {
@@ -42,7 +83,7 @@ public class Job51Crawler extends BreadthCrawler {
         crawler.addRegex("http://(search.51job.com/list/).*|(jobs.51job.com/).*");
         crawler.setThreads(10);
         try {
-            crawler.start(4);
+            crawler.start(2);
         } catch (Exception e) {
             e.printStackTrace();
         }
