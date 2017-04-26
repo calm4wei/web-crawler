@@ -23,4 +23,18 @@ public interface Constants {
         }
     }
 
+    public enum SalaryUnit {
+        WAN("万/月"), QIAN("千/月");
+        String unit;
+
+        private SalaryUnit(String unit) {
+            this.unit = unit;
+        }
+
+        @Override
+        public String toString() {
+            return this.unit;
+        }
+    }
+
 }

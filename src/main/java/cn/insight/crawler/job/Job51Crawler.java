@@ -5,6 +5,7 @@ import cn.edu.hfut.dmic.webcollector.model.Links;
 import cn.edu.hfut.dmic.webcollector.model.Page;
 import cn.edu.hfut.dmic.webcollector.plugin.berkeley.BreadthCrawler;
 import cn.insight.crawler.job.entity.Position;
+import cn.insight.crawler.util.NumberUtils;
 import org.jsoup.nodes.Element;
 
 import static cn.insight.crawler.common.Constants.*;
@@ -54,8 +55,12 @@ public class Job51Crawler extends BreadthCrawler {
             String[] natureArr = natures.split("\\|");
 
             entity.setPosition(position);
+            if (location.contains("-")) {
+                location = location.substring(0, location.indexOf("-"));
+            }
+
             entity.setCity(location);
-            entity.setSalary(salary);
+            entity.setSalary(salaryConvert(salary));
             entity.setCompany(company);
             entity.setNature(natureArr[0]);
             entity.setScale(natureArr[1]);
@@ -74,6 +79,24 @@ public class Job51Crawler extends BreadthCrawler {
 
         }
 
+    }
+
+    public String salaryConvert(String salary) {
+        if (salary.contains("/")) {
+            String ss = salary.substring(0, salary.indexOf("/") - 1);
+            if (ss.contains("-")) {
+                String[] startEnd = ss.split("-");
+                if (salary.contains(SalaryUnit.QIAN.toString())) {
+                    salary = startEnd[0] + "k-" + startEnd[1] + "k";
+                } else if (salary.contains(SalaryUnit.WAN.toString())) {
+                    salary = NumberUtils.wanToQianUnit(startEnd[0])
+                            + "k-"
+                            + NumberUtils.wanToQianUnit(startEnd[1])
+                            + "k";
+                }
+            }
+        }
+        return salary;
     }
 
     public static void main(String[] args) {
