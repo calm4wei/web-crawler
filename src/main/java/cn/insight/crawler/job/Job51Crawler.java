@@ -81,6 +81,11 @@ public class Job51Crawler extends BreadthCrawler {
 
     }
 
+    /**
+     *
+     * @param salary
+     * @return
+     */
     public String salaryConvert(String salary) {
         if (salary.contains("/")) {
             String ss = salary.substring(0, salary.indexOf("/") - 1);
