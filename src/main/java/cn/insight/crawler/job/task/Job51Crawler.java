@@ -1,10 +1,13 @@
-package cn.insight.crawler.job;
+package cn.insight.crawler.job.task;
 
 import cn.edu.hfut.dmic.webcollector.model.CrawlDatums;
 import cn.edu.hfut.dmic.webcollector.model.Links;
 import cn.edu.hfut.dmic.webcollector.model.Page;
 import cn.edu.hfut.dmic.webcollector.plugin.berkeley.BreadthCrawler;
+import cn.insight.crawler.common.Constants;
 import cn.insight.crawler.job.entity.Position;
+import cn.insight.crawler.job.service.PositionService;
+import cn.insight.crawler.util.DateUtils;
 import cn.insight.crawler.util.NumberUtils;
 import org.jsoup.nodes.Element;
 
@@ -14,6 +17,8 @@ import static cn.insight.crawler.common.Constants.*;
  * Created by fengwei on 17/4/25.
  */
 public class Job51Crawler extends BreadthCrawler {
+
+    PositionService positionService = new PositionService();
 
     /**
      * 构造一个基于伯克利DB的爬虫
@@ -69,12 +74,15 @@ public class Job51Crawler extends BreadthCrawler {
             // 发布日期
             Element publishInfo = page.select("div.tCompany_main > div.tBorderTop_box.bt > div").first();
             String publishDate = publishInfo.select("div > span").last().text();
-            entity.setPublish_date(publishDate);
+            entity.setPublish_date(DateUtils.completeDate(publishDate));
 
             // 岗位职责
             String duty = page.select("div.tCompany_main > div:nth-child(4) > div").first().text();
             entity.setDuty(duty);
+            entity.setData_source(Constants.DATA_SOURCE_TYPE_51JOB);
             System.out.println(entity);
+            positionService.insertPosition(entity);
+
         } finally {
 
         }
@@ -82,11 +90,19 @@ public class Job51Crawler extends BreadthCrawler {
     }
 
     /**
-     *
      * @param salary
      * @return
      */
     public String salaryConvert(String salary) {
+
+        if (salary == null) {
+            return "";
+        }
+
+        if (salary.contains(SalaryUnit.NIAN.toString())) {
+            return salary;
+        }
+
         if (salary.contains("/")) {
             String ss = salary.substring(0, salary.indexOf("/") - 1);
             if (ss.contains("-")) {
@@ -109,9 +125,9 @@ public class Job51Crawler extends BreadthCrawler {
         crawler.addSeed("http://search.51job.com/list/070200,000000,0000,00,9,99,%25E5%25A4%25A7%25E6%2595%25B0%25E6%258D%25AE,2,1.html"
                 , PageType.LIST.toString());
         crawler.addRegex("http://(search.51job.com/list/).*|(jobs.51job.com/).*");
-        crawler.setThreads(10);
+        crawler.setThreads(20);
         try {
-            crawler.start(2);
+            crawler.start(4);
         } catch (Exception e) {
             e.printStackTrace();
         }

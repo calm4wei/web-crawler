@@ -1,7 +1,7 @@
 package cn.insight.crawler.test;
 
 import cn.insight.crawler.common.Constants;
-import cn.insight.crawler.job.Job51Crawler;
+import cn.insight.crawler.job.task.Job51Crawler;
 import cn.insight.crawler.util.NumberUtils;
 import org.junit.Test;
 
@@ -53,4 +53,5 @@ public class PageTest {
         System.out.println(crawler.salaryConvert("1.8-1.9万/月"));
         System.out.println(crawler.salaryConvert("10-20万/年"));
     }
+
 }

@@ -43,4 +43,28 @@ public class MybatisTest {
             session.close();
         }
     }
+
+    @Test
+    public void test_insert_position() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            PositionMapper mapper = session.getMapper(PositionMapper.class);
+            Position p = new Position();
+            p.setPosition("JavaEE4");
+            p.setCity("上海");
+            p.setCompany("上图");
+            p.setPublish_date("2017-05-01");
+            p.setSalary("10k-18k");
+            p.setNature("");
+            p.setDuty("开发");
+            p.setIndustry("互联网");
+            p.setSource_url("");
+            p.setScale("50人");
+            mapper.insertPosition(p);
+//            mapper.insert(p);
+            session.commit();
+        } finally {
+            session.close();
+        }
+    }
 }
