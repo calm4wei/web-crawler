@@ -22,4 +22,11 @@ public class UtilsTest {
     public void test_format_date() {
         System.out.println(DateUtils.formatDate("2017-04-30 17:23:27"));
     }
+
+    @Test
+    public void test_get_date() {
+        System.out.println(DateUtils.getDate(-1, 1, 1));
+        System.out.println(DateUtils.getDate(-10, 1, 1));
+        System.out.println(DateUtils.getDate(-20, 1, 1));
+    }
 }

@@ -11,6 +11,12 @@ import java.util.Date;
 public class DateUtils {
 
 
+    /**
+     * 将带 MM-dd 的字符串格式化为 yyyy-MM-dd 的日期
+     *
+     * @param publish_date，例如：05-09发布
+     * @return
+     */
     public static String completeDate(String publish_date) {
         String date = "";
         if (publish_date != null && !"".equals(publish_date)) {
@@ -21,12 +27,23 @@ public class DateUtils {
 
     }
 
+    /**
+     * 取当前的年份，格式为 yyyy
+     *
+     * @return
+     */
     public static int getYear() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         return year;
     }
 
+    /**
+     * 将时间字符串格式化为 yyyy-MM-dd
+     *
+     * @param time
+     * @return
+     */
     public static String formatDate(String time) {
         String re = "";
         try {
@@ -37,5 +54,22 @@ public class DateUtils {
         }
 
         return re;
+    }
+
+    /**
+     * 基于当天的日期，取加减yearAmount（多少年）、monthAmount（多少月）、dayAmount（多少天）后的日期
+     *
+     * @param yearAmount
+     * @param monthAmount
+     * @param dayAmount
+     * @return
+     */
+    public static String getDate(Integer yearAmount, Integer monthAmount, Integer dayAmount) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.YEAR, yearAmount);
+        calendar.add(Calendar.MONTH, monthAmount);
+        calendar.add(Calendar.DAY_OF_MONTH, dayAmount);
+        return sdf.format(calendar.getTime());
     }
 }

@@ -14,6 +14,7 @@ import java.io.InputStream;
 public class DataSourceUtils {
 
     private static SqlSessionFactory sqlSessionFactory = null;
+    private static final String resource = "zqy-mybatis-config.xml";
 
     private DataSourceUtils() {
 
@@ -23,7 +24,6 @@ public class DataSourceUtils {
         if (sqlSessionFactory == null) {
             synchronized (DataSourceUtils.class) {
                 if (sqlSessionFactory == null) {
-                    String resource = "mybatis-config.xml";
                     InputStream inputStream = null;
                     try {
                         inputStream = Resources.getResourceAsStream(resource);
